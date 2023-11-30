@@ -15,18 +15,21 @@
 #define FOODFILEPATH "marbleFoodConfig.txt"
 #define FESTFILEPATH "marbleFestivalConfig.txt"
 
-
+#define MAX_NODE		100
 //board configuration parameters
 static int board_nr;
 static int food_nr;
 static int festival_nr;
 
-
+static int player_nr;
+static int player_energy[MAX_PLAYER];
+static int player_position[MAX_PLAYER];
+static char player_name[MAX_PLAYER][MAX_CHARNAME];
 
 //function prototypes
 #if 0
 int isGraduated(void); //check if any player is graduated
-void generatePlayers(int n, int initEnergy); //generate a new player
+
 void printGrades(int player); //print grade history of the player
 void goForward(int player, int step); //make player go "step" steps on the board (check if player is graduated)
 void printPlayerStatus(void); //print all player status at the beginning of each turn
@@ -36,7 +39,25 @@ void* findGrade(int player, char *lectureName); //find the grade from the player
 void printGrades(int player); //print all the grade history of the player
 #endif
 
+void generatePlayers(int n, int initEnergy) //generate a new player
+{
+	int i;
+	//n time loop
+	for (i=0; i<n; i++)
+	{
+		//input name
+		printf("유저 이름을 입력하세요.\n"); //안내문구 
+		scanf("%s", player_name[i][0]);
+		fflush(stdin);
+		//set position
+		player_position[i] = 0;
+		
+		//set energy
+		player_energy[i] = initEnergy;
+	}
+	
 
+	
 
 
 int rolldie(int player)
@@ -69,7 +90,7 @@ void actionNode(int player)
 
 
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char * argv[]){
     
     FILE* fp;
     char name[MAX_CHARNAME];
@@ -143,13 +164,19 @@ int main(int argc, const char * argv[]) {
     
     
     //2. Player configuration ---------------------------------------------------------------------------------
-    /*
+    
     do
     {
         //input player number to player_nr
+        printf("input player No. :");
+  		scanf("%d", player_nr);
+  		fflush(stdin);
     }
-    while ();
-    generatePlayers();
+    while (player_nr<0 || player_nr > MAX_PLAYER);
+    
+    
+    
+    generatePlayers(player_nr, initEnergy);
     */
     
     //3. SM Marble game starts ---------------------------------------------------------------------------------
