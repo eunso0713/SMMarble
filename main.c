@@ -22,9 +22,24 @@ static int food_nr;
 static int festival_nr;
 
 static int player_nr;
+
+typedef struct player {
+	int energy;
+	int position;
+	char name[MAX_CHARNAME];
+	int accumCredit; //누적된 학점: 졸업을 위해서
+	int flag_graduate; //플레이어가 졸업할 수 있는 상태인지 확인
+	 
+}player_t;
+
+static player_t cur_player[MAX_PLAYER];
+
+#if 0
 static int player_energy[MAX_PLAYER];
 static int player_position[MAX_PLAYER];
 static char player_name[MAX_PLAYER][MAX_CHARNAME];
+#end if
+
 
 //function prototypes
 #if 0
@@ -47,13 +62,18 @@ void generatePlayers(int n, int initEnergy) //generate a new player
 	{
 		//input name
 		printf("유저 이름을 입력하세요.\n"); //안내문구 
-		scanf("%s", player_name[i][0]);
+		//scanf("%s", player_name[i][0]);
+		scanf("%s", cur_player[i].name);
 		fflush(stdin);
 		//set position
-		player_position[i] = 0;
+		//player_position[i] = 0;
+		cur_player[i].position = 0;
 		
 		//set energy
-		player_energy[i] = initEnergy;
+		//player_energy[i] = initEnergy; 
+		cur_player[i].energy[i] = initEnergy;
+		cur_player[i].accumCredit = 0;
+		//cur_player[i].flag_graduate = 0;
 	}
 	
 
@@ -126,9 +146,9 @@ int main(int argc, const char * argv[]){
     printf("Total number of board nodes : %i\n", board_nr);
     
     for (i = 0;i<board_nr;i++)
-        printf("node %i : %s, %i\n", i, smmObj_getNodeName(i), smmObj_getNodeType(i));
+        printf("node %i : %s, %i\n", i, smmObj_getNodeName(i), smmObj_getNodeType(i)(smmObj_getNodeType(i)) );
     
-    #if 0
+#if 0
     //2. food card config 
     if ((fp = fopen(FOODFILEPATH,"r")) == NULL)
     {
@@ -162,6 +182,7 @@ int main(int argc, const char * argv[]){
     printf("Total number of festival cards : %i\n", festival_nr);
     
     
+#end if
     
     //2. Player configuration ---------------------------------------------------------------------------------
     
@@ -177,18 +198,20 @@ int main(int argc, const char * argv[]){
     
     
     generatePlayers(player_nr, initEnergy);
-    */
     
+    
+
+
     //3. SM Marble game starts ---------------------------------------------------------------------------------
     while () //is anybody graduated?
     {
         int die_result;
         
         //4-1. initial printing
-        //printPlayerStatus();
+        printPlayerStatus();
         
         //4-2. die rolling (if not in experiment)
-        
+        die_result = rolldie();
         
         //4-3. go forward
         //goForward();
@@ -199,7 +222,7 @@ int main(int argc, const char * argv[]){
         //4-5. next turn
         
     }
-    #endif
+
     system("PAUSE");
     return 0;
 }

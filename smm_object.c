@@ -31,47 +31,55 @@ char *smmObj_getTypeName (int type)
 
 //1. 구조체 형식 정의
 
-struct smmObj{
+typedef struct smmObject{
 	char name[MAX_CHARNAME];
 	int type;
 	int credit;
 	int energy;
-	int noNode;
-};
+} smmObject_t;
 //2. 구조체 배열 변수 정의 
 
+static smmObject_t smm_node[MAX_NODE];
+ 
+#if 0 //if 0 - end if 하면 중간에 있는 건 다 지워짐! 
+static char smmObj_name[MAX_NODE][MAX_CHARNAME];
+static int smmObj_type[MAX_NODE];
+static int smmObj_credit[MAX_NODE];
+static int smmObj_energy[MAX_NODE];
+static int smmObj_noNode=0;
+#end if
 
-//static char smmObj_name[MAX_NODE][MAX_CHARNAME];
-//static int smmObj_type[MAX_NODE];
-//static int smmObj_credit[MAX_NODE];
-//static int smmObj_energy[MAX_NODE];
-//static int smmObj_noNode=0;
-
-
-#if 0
 
 //object generation
 void smmObj_genNode(char* name, int type, int credit, int energy)
 {
-    strcpy(smmObj_name[smmObj_noNode], name);
-    smmObj_type[smmObj_noNode] = type;
-    smmObj_credit[smmObj_noNode] = credit;
-    smmObj_energy[smmObj_noNode] = energy;
+    strcpy (smm_node[smmObj_noNode].name, name);
+    smm_node[smmObj_noNode].type = type;
+    smm_node[smmObj_noNode].credit = credit;
+    smm_node[smmObj_noNode].energy = energy;
     
     smmObj_noNode++;
 }
 
 char* smmObj_getNodeName(int node_nr)
 {
-    return smmObj_name[smmObj_noNode];
+    return smm_node[node_nr].name;
 }
 
 int smmObj_getNodeType(int node_nr)
 {
-    return smmObj_type[node_nr];
+    return smm_node[node_nr].type;
 }
 
+int smmObj_getNodeCredit(int node_nr)
+{
+	return smm_node[node_nr].credit;
+}
 
+int smmObj_getNodeEnergy(int node_nr)
+{
+	return smm_node[node_nr].energy;
+}
 //member retrieving
 
 
@@ -87,4 +95,4 @@ char* smmObj_getGradeName(smmGrade_e grade)
     return smmGradeName[grade];
 }
 
-#endif
+
