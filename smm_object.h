@@ -52,6 +52,13 @@ int smmObj_getNodeCredit(int node_nr);
 int smmObj_getNodeEnergy(int node_nr);
 //element to string
  
+ 
+typedef enum smmObjType {
+	smmObjType_board = 0,
+	smmObjType_card,
+	smmObjType_grade
+} smmObjType_e;
+
 
 
 #endif /* smm_object_h */
