@@ -118,7 +118,7 @@ void generatePlayers(int n, int initEnergy) //generate a new player
 		cur_player[i].accumCredit = 0;
 		cur_player[i].flag_graduate = 0;
 	}
-	
+}
 
 	
 
@@ -305,4 +305,4 @@ int main(int argc, const char * argv[])
     system("PAUSE");
     return 0;
 	
-}
+}//Why? why not working????????

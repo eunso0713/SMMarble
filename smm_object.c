@@ -23,7 +23,7 @@ static char smmNodeName[SMMNODE_TYPE_MAX][MAX_CHARNAME] = {
 	"festival"
 };
 
-char *smmObj_getTypeName (int type)
+char* smmObj_getTypeName (int type)
 {
 	return (char*)smmNodeName[type];
 }
@@ -33,11 +33,11 @@ char *smmObj_getTypeName (int type)
 
 
 //main.c에서 필요할 때 (genObject 부를 때) 이거를 .c에서 .h로 옮기면 main에서 사용 가능 
-typedef enum smmObjType {
+/*typedef enum smmObjType {
 	smmObjType_board = 0,
 	smmObjType_card,
 	smmObjType_grade
-} smmObjType_e;
+} smmObjType_e;*/
 
 typedef enum smmObjGrade {
 	smmObjGrade_Ap = 0,
@@ -55,7 +55,7 @@ typedef enum smmObjGrade {
 
 typedef struct smmObject{
 	char name[MAX_CHARNAME];
-	smmObjType_e objtype;
+	smmObjType_e objType;
 	int type;
 	int credit;
 	int energy;
@@ -72,18 +72,18 @@ static int smmObj_type[MAX_NODE];
 static int smmObj_credit[MAX_NODE];
 static int smmObj_energy[MAX_NODE];
 static int smmObj_noNode=0;
-#end if
+#endif
 
 
 //object generation
-void* smmObj_genObject(char* name, smmObjType_e objtype, smmObjGrade_e type, int type, int credit, int energy)
+void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade)
 {
 	smmObject_t*ptr;
 	
 	ptr = (smmObject_t*)malloc(sizeof(smmObject_t));
 	
 	strcpy (ptr->name, name);
-    ptr->objtype = objtype;
+    ptr->objType = objType;
     ptr->type = type;
     ptr->credit = credit;
     ptr->energy = energy;
@@ -98,24 +98,30 @@ void* smmObj_genObject(char* name, smmObjType_e objtype, smmObjGrade_e type, int
     //smmObj_noNode++;
 }
 
-char* smmObj_getNodeName(int node_nr)
+
+
+int smmObj_getNodeType(void* obj)
 {
-    return smm_node[node_nr].name;
+	smmObject_t* ptr = (smmObject_t*)obj;
+	
+	return ptr -> type;
+    //return smm_node[node_nr].type;
 }
 
-int smmObj_getNodeType(int node_nr)
+int smmObj_getNodeCredit(void* obj)
 {
-    return smm_node[node_nr].type;
+	smmObject_t* ptr = (smmObject_t*)obj;
+	
+	return ptr -> credit;
+	//return smm_node[node_nr].credit;
 }
 
-int smmObj_getNodeCredit(int node_nr)
+int smmObj_getNodeEnergy(void* obj)
 {
-	return smm_node[node_nr].credit;
-}
-
-int smmObj_getNodeEnergy(int node_nr)
-{
-	return smm_node[node_nr].energy;
+	smmObject_t* ptr = (smmObject_t*)obj;
+	
+	return ptr -> energy;
+	//return smm_node[node_nr].energy;
 }
 //member retrieving
 
@@ -131,7 +137,7 @@ char* smmObj_getNodeName(void* obj)
     //return smmNodeName[type];
 }
 
-char* smmObj_getGradeName(smmGrade_e grade)
+char* smmObj_getGradeName(int smmGrade_e grade)
 {
     return smmGradeName[grade];
 }

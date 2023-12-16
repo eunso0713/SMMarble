@@ -5,7 +5,7 @@
 //  Created by Juyeop Kim on 2023/11/05.
 //
 
-#ifndef smm_object_h
+
 #define smm_object_h
 
 #define SMMNODE_TYPE_LECTURE			0
@@ -46,10 +46,10 @@
 void smmObj_getNode(char* name, int type, int credit, int energy);
 
 //member retrieving
-char* smmObj_getNodeName(int node_nr);
-int smmObj_getNodeType(int node_nr);
-int smmObj_getNodeCredit(int node_nr);
-int smmObj_getNodeEnergy(int node_nr);
+char* smmObj_getNodeName(void* obj);
+int smmObj_getNodeType(void* obj);
+int smmObj_getNodeCredit(void* obj);
+int smmObj_getNodeEnergy(void* obj);
 //element to string
  
  
@@ -60,5 +60,4 @@ typedef enum smmObjType {
 } smmObjType_e;
 
 
-
-#endif /* smm_object_h */
+ /* smm_object_h */
