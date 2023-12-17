@@ -23,22 +23,6 @@ static char smmNodeName[SMMNODE_TYPE_MAX][MAX_CHARNAME] = {
 	"festival"
 };
 
-char* smmObj_getTypeName (int type)
-{
-	return (char*)smmNodeName[type];
-}
-/*유형의 이름을 출력할 수 있는 함수 */
-
-//1. 구조체 형식 정의
-
-
-//main.c에서 필요할 때 (genObject 부를 때) 이거를 .c에서 .h로 옮기면 main에서 사용 가능 
-/*typedef enum smmObjType {
-	smmObjType_board = 0,
-	smmObjType_card,
-	smmObjType_grade
-} smmObjType_e;*/
-
 typedef enum smmObjGrade {
 	smmObjGrade_Ap = 0,
 	smmObjGrade_A0,
@@ -52,6 +36,17 @@ typedef enum smmObjGrade {
 } smmObjGrade_e;
 
 
+static char smmGradeName [9][2]={
+	"A+",
+	"A0",
+	"A-",
+	"B+",
+	"B0",
+	"B-",
+	"C+",
+	"C0",
+	"C-",
+};
 
 typedef struct smmObject{
 	char name[MAX_CHARNAME];
@@ -74,11 +69,27 @@ static int smmObj_energy[MAX_NODE];
 static int smmObj_noNode=0;
 #endif
 
+char* smmObj_getTypeName (int type)
+{
+	return (char*)smmNodeName[type];
+}
+/*유형의 이름을 출력할 수 있는 함수 */
+
+//1. 구조체 형식 정의
+
+
+//main.c에서 필요할 때 (genObject 부를 때) 이거를 .c에서 .h로 옮기면 main에서 사용 가능 
+/*typedef enum smmObjType {
+	smmObjType_board = 0,
+	smmObjType_card,
+	smmObjType_grade
+} smmObjType_e;*/
+
 
 //object generation
 void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade)
 {
-	smmObject_t*ptr;
+	smmObject_t* ptr;
 	
 	ptr = (smmObject_t*)malloc(sizeof(smmObject_t));
 	
@@ -104,7 +115,7 @@ int smmObj_getNodeType(void* obj)
 {
 	smmObject_t* ptr = (smmObject_t*)obj;
 	
-	return ptr -> type;
+	return ptr->type;
     //return smm_node[node_nr].type;
 }
 
@@ -112,7 +123,7 @@ int smmObj_getNodeCredit(void* obj)
 {
 	smmObject_t* ptr = (smmObject_t*)obj;
 	
-	return ptr -> credit;
+	return ptr->credit;
 	//return smm_node[node_nr].credit;
 }
 
@@ -120,7 +131,7 @@ int smmObj_getNodeEnergy(void* obj)
 {
 	smmObject_t* ptr = (smmObject_t*)obj;
 	
-	return ptr -> energy;
+	return ptr->energy;
 	//return smm_node[node_nr].energy;
 }
 //member retrieving
@@ -137,7 +148,12 @@ char* smmObj_getNodeName(void* obj)
     //return smmNodeName[type];
 }
 
-char* smmObj_getGradeName(int smmGrade_e grade)
+smmObjGrade_e smmObj_getNodeGrade(void* obj){
+	smmObject_t* ptr = (smmObject_t*)obj;
+	return ptr->grade;	
+}
+
+char* smmObj_getGradeName(smmObjGrade_e grade)
 {
     return smmGradeName[grade];
 }

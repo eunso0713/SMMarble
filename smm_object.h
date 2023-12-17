@@ -41,7 +41,6 @@
 */
 
 
-
 //object generation
 void smmObj_getNode(char* name, int type, int credit, int energy);
 
@@ -50,8 +49,10 @@ char* smmObj_getNodeName(void* obj);
 int smmObj_getNodeType(void* obj);
 int smmObj_getNodeCredit(void* obj);
 int smmObj_getNodeEnergy(void* obj);
+smmObjGrade_e smmObj_getNodeGrade(void* obj);
+char* smmObj_getGradeName(int grade);
 //element to string
- 
+
  
 typedef enum smmObjType {
 	smmObjType_board = 0,

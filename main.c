@@ -123,7 +123,7 @@ void generatePlayers(int n, int initEnergy) //generate a new player
 	
 
 
-int rolldie(int player)
+int rolldice(int player)
 {
     char c;
     printf(" Press any key to roll a dice (press g to see grade): ");
@@ -135,7 +135,7 @@ int rolldie(int player)
         printGrades(player);
 
     
-    return (rand()%MAX_DIE + 1);
+    return (rand()%MAX_DICE + 1);
 }
 
 
@@ -152,7 +152,7 @@ void actionNode(int player)
     {
         //case lecture:
         case SMMNODE_TYPE_LECTURE:
-        	if(1)///////////////////////////////////////////////////////////////////////////////////////////////////여기 if에는 뭐가 들어가야될까 
+        	if(1)////////////////////////////////여기 if에는 뭐가 들어가야될까 
 				cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
         		cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
         	
@@ -171,7 +171,6 @@ void actionNode(int player)
 
 int main(int argc, const char * argv[])
 {
-
     
     FILE* fp;
     char name[MAX_CHARNAME];
@@ -224,7 +223,7 @@ int main(int argc, const char * argv[])
 		 
 	}
     
-#if 0
+
     //2. food card config 
     if ((fp = fopen(FOODFILEPATH,"r")) == NULL)
     {
@@ -233,11 +232,21 @@ int main(int argc, const char * argv[])
     }
     
     printf("\n\nReading food card component......\n");
-    while () //read a food parameter set
+
+    
+    while ( fscanf(fp, "%s %i", name, &energy) == 2 ) //read a food parameter set
     {
         //store the parameter set
+        void *foodObj = smmObj_genObject(name, 0, 0, 0, energy, 0);
+        smmdb_addTail(LISTNO_FOODCARD, foodObj);
+		  
+        
+		
+		food_nr++;
     }
     fclose(fp);
+
+    
     printf("Total number of food cards : %i\n", food_nr);
     
     
@@ -250,15 +259,23 @@ int main(int argc, const char * argv[])
     }
     
     printf("\n\nReading festival card component......\n");
-    while () //read a festival card string
+
+
+    while ( fscanf(fp, "%s", name) == 1 ) //read a festival card string
     {
         //store the parameter set
+        void *festObj = smmObj_genObject(name, 0, 0, 0, 0, 0);/*성적값 보드에 표시 안해서 아무거나 넣기 일단 0으로*/
+        smmdb_addTail(LISTNO_FESTCARD, festObj);
+		  
+        
+		festival_nr++;
     }
     fclose(fp);
+    
+
     printf("Total number of festival cards : %i\n", festival_nr);
     
-    
-#endif
+
     
     //2. Player configuration ---------------------------------------------------------------------------------
     
@@ -281,22 +298,23 @@ int main(int argc, const char * argv[])
     //3. SM Marble game starts ---------------------------------------------------------------------------------
     while (1) //is anybody graduated?
     {
-        int die_result;
+        int dice_result;
         
         //4-1. initial printing
         printPlayerStatus();
         
         //4-2. die rolling (if not in experiment)
-        die_result = rolldie(turn);
+        dice_result = rolldice(turn);
         
         //4-3. go forward
-        goForward(turn, die_result);
+        goForward(turn, dice_result);
 
 		//4-4. take action at the destination node of the board
         actionNode(turn);
         
         //4-5. next turn
-        
+        turn ++;
+        if (turn == player_nr) turn = 0;
     }
     
     
@@ -305,4 +323,4 @@ int main(int argc, const char * argv[])
     system("PAUSE");
     return 0;
 	
-}//Why? why not working????????
+}
