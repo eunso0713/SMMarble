@@ -166,6 +166,7 @@ void actionNode(int player)
         	gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, 0);
         	smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
         	
+			 
         	break;
         
         default:
@@ -243,7 +244,7 @@ int main(int argc, const char * argv[])
     while ( fscanf(fp, "%s %i", name, &energy) == 2 ) //read a food parameter set
     {
         //store the parameter set
-        void *foodObj = smmObj_genObject(name, 0, 0, 0, energy, 0);
+        void *foodObj = smmObj_genObject(name, smmObjType_card, 0, 0, energy, 0);
         smmdb_addTail(LISTNO_FOODCARD, foodObj);
 		  
         
@@ -270,7 +271,7 @@ int main(int argc, const char * argv[])
     while ( fscanf(fp, "%s", name) == 1 ) //read a festival card string
     {
         //store the parameter set
-        void *festObj = smmObj_genObject(name, 0, 0, 0, 0, 0);/*성적값 보드에 표시 안해서 아무거나 넣기 일단 0으로*/
+        void *festObj = smmObj_genObject(name, smmObjType_card, 0, 0, 0, 0);/*성적값 보드에 표시 안해서 아무거나 넣기 일단 0으로*/
         smmdb_addTail(LISTNO_FESTCARD, festObj);
 		  
         
@@ -316,8 +317,10 @@ int main(int argc, const char * argv[])
         //4-3. go forward
         goForward(turn, dice_result);
         //node 순서 체크하고 dice값만큼 이동하기: 마지막 node 지나가면 home으로 귀환 
-        //home으로 돌아갔을 때 graduate credit check하는 function 호출 //home+6까지 확인해야되는걸까?? 
-
+        //home으로 지나갔을 때 graduate credit check하는 function 호출 //home+6까지 확인해야되는걸까?? 
+		//graduate 안했으면 action 하기 
+		
+		
 		//4-4. take action at the destination node of the board
         actionNode(turn);
         //home node에 가면 energy +18
