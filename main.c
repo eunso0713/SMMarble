@@ -44,9 +44,15 @@ static char player_name[MAX_PLAYER][MAX_CHARNAME];
 
 //function prototypes
 #if 0
-int isGraduated(void); //check if any player is graduated
+int isGraduated(void)
+{
+	//if any player's accumCredit > GRADUATE_CREDIT: that player is Graduated
+} //check if any player is graduated
 
-void printGrades(int player); //print grade history of the player
+void printGrades(int player)
+{
+	//print the grades of the lectures that players have heard
+} //print grade history of the player
 #endif
 
 
@@ -300,6 +306,7 @@ int main(int argc, const char * argv[])
     {
         int dice_result;
         
+        
         //4-1. initial printing
         printPlayerStatus();
         
@@ -308,9 +315,18 @@ int main(int argc, const char * argv[])
         
         //4-3. go forward
         goForward(turn, dice_result);
+        //node 순서 체크하고 dice값만큼 이동하기: 마지막 node 지나가면 home으로 귀환 
+        //home으로 돌아갔을 때 graduate credit check하는 function 호출 //home+6까지 확인해야되는걸까?? 
 
 		//4-4. take action at the destination node of the board
         actionNode(turn);
+        //home node에 가면 energy +18
+		//lecture node에 가면 energy 잃고 credit 증가; energy 없으면 수강포기; 수강 성공하면 grade print
+		//실험시간 node에 가면 lab으로 이동하기: 3 turn pass하기
+		//cafe; burger에 가면 해당 node의 energy 만큼 energy 증가
+		//간식시간 node에 가면 food card 뽑고 해당 card energy 만큼 energy 증가 
+		//festival node에 가면 festival card 뽑고 해당 mission 수행하기
+
         
         //4-5. next turn
         turn ++;
