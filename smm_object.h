@@ -49,7 +49,7 @@ char* smmObj_getNodeName(void* obj);
 int smmObj_getNodeType(void* obj);
 int smmObj_getNodeCredit(void* obj);
 int smmObj_getNodeEnergy(void* obj);
-smmObjGrade_e smmObj_getNodeGrade(void* obj);
+int smmObj_getNodeGrade(void* obj);
 char* smmObj_getGradeName(int grade);
 //element to string
 

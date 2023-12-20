@@ -148,12 +148,12 @@ char* smmObj_getNodeName(void* obj)
     //return smmNodeName[type];
 }
 
-smmObjGrade_e smmObj_getNodeGrade(void* obj){
+int smmObj_getNodeGrade(void* obj){
 	smmObject_t* ptr = (smmObject_t*)obj;
 	return ptr->grade;	
 }
 
-char* smmObj_getGradeName(smmObjGrade_e grade)
+char* smmObj_getGradeName(int grade)
 {
     return smmGradeName[grade];
 }
