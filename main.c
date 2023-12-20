@@ -46,7 +46,7 @@ static char player_name[MAX_PLAYER][MAX_CHARNAME];
 
 int isGraduated(int player)
 {
-	if (cur_player[player].accumCredit >= GRADUATE_CREDIT)
+	if (cur_player[player].position == 0 && cur_player[player].accumCredit >= GRADUATE_CREDIT)
 		{
 			cur_player[player].flag_graduate = 1;
 		}
@@ -54,7 +54,7 @@ int isGraduated(int player)
 		cur_player[player].flag_graduate = 0;
 		
 	return cur_player[player].flag_graduate;
-	//if any player's accumCredit > GRADUATE_CREDIT: that player is Graduated
+	//if any player is at Home Node and her accumCredit > GRADUATE_CREDIT: that player is Graduated
 } //check if any player is graduated
 
 
@@ -63,6 +63,12 @@ int isGraduated(int player)
 void goForward(int player, int step)
 {
 	void *boardPtr;
+	
+	if((cur_player[player].position + step) >= smmdb_len(LISTNO_NODE))
+	{
+		cur_player[player].position -= smmdb_len(LISTNO_NODE);
+	}
+	
 	cur_player[player].position += step;
 	boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
 	
@@ -76,10 +82,11 @@ void printGrades(int player)
 {
 	int i;
 	void *gradePtr;
+//printf("PRINT GRADES!! of player %d\n", player);
 	for (i=0;i<smmdb_len(LISTNO_OFFSET_GRADE + player);i++)
 	{
 		gradePtr = smmdb_getData(LISTNO_OFFSET_GRADE + player, i);
-		printf("%s: %i\n", smmObj_getNodeName(gradePtr), smmObj_getNodeGrade(gradePtr));
+		printf("%s: %s\n", smmObj_getNodeName(gradePtr), smmObj_getGradeName(smmObj_getNodeGrade(gradePtr)));
 	}
 }
 
@@ -90,11 +97,12 @@ void printPlayerStatus()
 printf("Printing Player Info .. Total %d players:\n", player_nr);
 	for (i=0; i<player_nr; i++)
 	{
-		printf("%s: credit %i, energt %i, position %i\n",
+		printf("%s: credit %i, energy %i, position %i, Lab status(0: Not in Lab, 1: In Lab) %i\n",
 		cur_player[i].name,
 		cur_player[i].accumCredit,
 		cur_player[i].energy,
-		cur_player[i].position );
+		cur_player[i].position,
+		cur_player[i].inLab );
 	}
 }
  //print all player status at the beginning of each turn
@@ -112,6 +120,7 @@ int checkLecture(int list_nr, char *lectureName)
 	int index = 0;
 	int length = smmdb_len(list_nr);
 	
+//printf("lecture name is %s\n", lectureName);
 	for (index = 0; index < length; index++)
 	{
 		if(strcmp(smmObj_getNodeName(smmdb_getData(list_nr, index)), lectureName) == 1)
@@ -174,7 +183,7 @@ void actionNode(int player)
 	int type = smmObj_getNodeType(boardPtr);
 	char *name = smmObj_getNodeName(boardPtr);
 	void *gradePtr;
-	int labPosition = checkLecture(LISTNO_NODE,"전자공학실험실" );//이 다음에 오는 값을 구해야 되는 거 아닌가??? 그걸 어케 구하지  
+	int labPosition;
 	int randomFoodCard;
 	char *CardName;
 	int randomFestCard;
@@ -183,6 +192,9 @@ void actionNode(int player)
 
     switch(type)
     {
+
+//printf("type is %d \n\n\n\n\n", type);
+
         //case lecture:
         case SMMNODE_TYPE_LECTURE:
 
@@ -199,6 +211,7 @@ void actionNode(int player)
 				
 				printf("수강하시겠습니까? Y: 1, N: press any key - \n");
 				scanf("%d", &answer);
+				fflush(stdin);
 				if (answer == 1)
 				{
 					cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
@@ -206,6 +219,7 @@ void actionNode(int player)
         			//grade generation 
        				gradePtr = smmObj_genObject(smmObj_getNodeName(boardPtr), smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, rand()%9);
        				smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
+       				break;
 				}
 				else
 					("수강 포기...\n");
@@ -221,25 +235,27 @@ void actionNode(int player)
         
         case SMMNODE_TYPE_HOME:
         	cur_player[player].energy += smmObj_getNodeEnergy(boardPtr);
-        	//If player is on Home Node; Player earns energy
+        	//If player is at Home Node; Player earns energy
         	break;
         
         case SMMNODE_TYPE_GOTOLAB:
+        	labPosition = checkLecture(LISTNO_NODE,"전자공학실험실");
         	cur_player[player].position = labPosition; // player goes to Lab Node
         	cur_player[player].inLab = 1; //player is in the lab time
         	break;
         	
         case SMMNODE_TYPE_FOODCHANCE:
-        	
 			randomFoodCard = rand()%smmdb_len(LISTNO_FOODCARD);
       		CardName = smmObj_getNodeName(smmdb_getData(LISTNO_FOODCARD, randomFoodCard));
 	    	cur_player[player].energy += smmObj_getNodeEnergy(smmdb_getData(LISTNO_FOODCARD, randomFoodCard));
         	
         	printf("%s가 선택되었습니다. %d 만큼의 에너지를 보충합니다.\n", CardName, smmObj_getNodeEnergy(smmdb_getData(LISTNO_FOODCARD, randomFoodCard)));
         	break;
+        	
         case SMMNODE_TYPE_FESTIVAL:
         	randomFestCard = rand()%smmdb_len(LISTNO_FESTCARD);
         	printf("%s\n", smmObj_getNodeName(smmdb_getData(LISTNO_FESTCARD, randomFestCard)));
+        	break;
         	
         default:
             break;
@@ -259,6 +275,7 @@ int main(int argc, const char * argv[])
     int i;
     int initEnergy;
     int turn = 0;
+    
     
     board_nr = 0;
     food_nr = 0;
@@ -382,12 +399,12 @@ int main(int argc, const char * argv[])
 
         
         //4-1. initial printing
-printf("wowwwwwwwwww %d\n", player_nr);
+
         printPlayerStatus();
-printf("wwwwwwwwwwwwwwwwwwwwwwow\n");
+
         if (cur_player[turn].inLab > 0){
         	outLabNo = rand()%MAX_DICE+1;
-        	
+        	cur_player[turn].energy -= smmObj_getNodeEnergy(smmdb_getData(LISTNO_NODE, SMMNODE_TYPE_LABORATORY));
         	printf("%s는 실험중입니다. \n", cur_player[turn].name);
 	        printf("Lab exodus no is. %d !!", outLabNo);
 	        if (rolldice(turn) >= outLabNo){
@@ -409,7 +426,8 @@ printf("wwwwwwwwwwwwwwwwwwwwwwow\n");
 	        //home으로 갔을 때 graduate credit check하는 function 호출
 			//isGraduated() == 1이면 게임 종료 
 			//isGraduated() == 0이면  actionNode로 넘어가기 
-			
+			if(isGraduated(turn) == 1)
+				break;
 			
 			//4-4. take action at the destination node of the board
 	        actionNode(turn);
@@ -423,8 +441,10 @@ printf("wwwwwwwwwwwwwwwwwwwwwwow\n");
 		}
         
         //4-5. next turn
+        
         turn ++;
         if (turn == player_nr) turn = 0;
+        
     }
     
     

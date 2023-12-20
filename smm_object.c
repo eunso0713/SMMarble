@@ -155,6 +155,8 @@ int smmObj_getNodeGrade(void* obj){
 
 char* smmObj_getGradeName(int grade)
 {
+printf("Grade Name Check %d!!!\n", grade);
+printf("%s\n",smmGradeName[grade]);
     return smmGradeName[grade];
 }
 
