@@ -139,7 +139,7 @@ int checkLecture(int list_nr, char *lectureName)
 //printf("lecture name is %s\n", lectureName);
 	for (index = 0; index < length; index++)
 	{
-		printf("비교: %s , %s\n\n", smmObj_getNodeName(smmdb_getData(list_nr, index)), lectureName);
+//printf("비교: %s , %s\n\n", smmObj_getNodeName(smmdb_getData(list_nr, index)), lectureName);
 		if(strcmp(smmObj_getNodeName(smmdb_getData(list_nr, index)), lectureName) == 0){
 			printf("Index is %d\n", index);
 			return index;
