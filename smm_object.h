@@ -2,7 +2,7 @@
 //  smm_object.h
 //  SMMarble object
 //
-//  Created by Juyeop Kim on 2023/11/05.
+//  Created by Eunso Cho on 2023/12/21.
 //
 
 
@@ -16,7 +16,7 @@
 #define SMMNODE_TYPE_FOODCHANCE			5
 #define SMMNODE_TYPE_FESTIVAL			6
 
-#define SMMNODE_TYPE_MAX				7 /*TYPE이 총 몇개냐 이 디파인 타입 뭐시기들이 .C 파일에 INCLUDE 됨 */
+#define SMMNODE_TYPE_MAX				7 /*TYPE이 총 몇개냐 이 타입들이 .C 파일에 INCLUDE 됨 */
 /* node type :
     lecture,
     restaurant,

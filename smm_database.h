@@ -2,7 +2,7 @@
 //  smm_database.h
 //  infection Path
 //
-//  Created by Juyeop Kim on 2023/11/05.
+//  Created by Eunso Cho on 2023/12/21.
 //
 
 #ifndef smm_database_h

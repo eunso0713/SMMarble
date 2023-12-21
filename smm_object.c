@@ -2,7 +2,7 @@
 //  smm_node.c
 //  SMMarble
 //
-//  Created by Juyeop Kim on 2023/11/05.
+//  Created by Eunso Cho on 2023/12/21.
 //
 
 #include "smm_common.h"
@@ -34,7 +34,7 @@ typedef enum smmObjGrade {
 	smmObjGrade_C0,
 	smmObjGrade_Cm
 } smmObjGrade_e;
-
+//성적 숫자로 저장 
 
 static char smmGradeName [9][2]={
 	"A+",
@@ -47,6 +47,8 @@ static char smmGradeName [9][2]={
 	"C0",
 	"C-",
 };
+//성적 이름 
+
 
 typedef struct smmObject{
 	char name[MAX_CHARNAME];
@@ -147,11 +149,13 @@ char* smmObj_getNodeName(void* obj)
 	return ptr->name;
     //return smmNodeName[type];
 }
+//노드의 이름을 불러옴 
 
 int smmObj_getNodeGrade(void* obj){
 	smmObject_t* ptr = (smmObject_t*)obj;
 	return ptr->grade;	
 }
+//성적을 불러옴 
 
 char* smmObj_getGradeName(int grade)
 {
@@ -159,5 +163,4 @@ char* smmObj_getGradeName(int grade)
 //printf("%s\n",smmGradeName[grade]);
     return smmGradeName[grade];
 }
-
-
+//성적을 불러옴: A+, A- 등 

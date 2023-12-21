@@ -2,7 +2,7 @@
 //  main.c
 //  SMMarble
 //
-//  Created by Eunso Cho on 2023/11/05
+//  Created by Eunso Cho on 2023/12/21
 //
 //
 
@@ -72,7 +72,7 @@ void goForward(int player, int step)
 	cur_player[player].position += step;
 	boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
 	
-	printf("%s 가 %i로 이동합니다. (노드 이름: %s)\n\n\n",
+	printf("\n%s 가 %i로 이동합니다. (노드 이름: %s)\n\n",
 		cur_player[player].name, cur_player[player].position,
 		smmObj_getNodeName(boardPtr));
 		
@@ -97,7 +97,7 @@ void printGrades(int player)
         char firstTwoChars[3]; // 끝에 NULL 문자('\0')를 고려하여 크기를 3으로 지정
         strncpy(firstTwoChars, gradeName, 2);
         firstTwoChars[2] = '\0'; // NULL 문자 추가하기
-		printf("%s: %d학점, 성적: %s\n", smmObj_getNodeName(gradePtr), smmObj_getNodeCredit(gradePtr), firstTwoChars);
+		printf("\n%s: %d학점, 성적: %s\n", smmObj_getNodeName(gradePtr), smmObj_getNodeCredit(gradePtr), firstTwoChars);
      
 	//	printf("%s: %s\n", smmObj_getNodeName(gradePtr), smmObj_getGradeName(smmObj_getNodeGrade(gradePtr)));
 	}
@@ -113,7 +113,7 @@ void printPlayerStatus()
 //printf("Printing Player Info .. Total %d players:\n", player_nr);
 	for (i=0; i<player_nr; i++)
 	{
-		printf("%s: 누적 학점 %i, 에너지 %i, 위치 %i, 실험 중 상태(0: 실험 중 아님, 1: 실험 중) %i\n\n\n",
+		printf("\n%s: 누적 학점 %i, 에너지 %i, 위치 %i, 실험 중 상태(0: 실험 중 아님, 1: 실험 중) %i",
 		cur_player[i].name,
 		cur_player[i].accumCredit,
 		cur_player[i].energy,
@@ -141,7 +141,7 @@ int checkLecture(int list_nr, char *lectureName)
 	{
 //printf("비교: %s , %s\n\n", smmObj_getNodeName(smmdb_getData(list_nr, index)), lectureName);
 		if(strcmp(smmObj_getNodeName(smmdb_getData(list_nr, index)), lectureName) == 0){
-			printf("Index is %d\n", index);
+		//	printf("Index is %d\n", index);
 			return index;
 		}
 	}
@@ -158,7 +158,7 @@ void generatePlayers(int n, int initEnergy) //generate a new player
 	for (i=0; i<n; i++)
 	{
 		//input name
-		printf("유저 이름을 입력하세요.\n\n"); //안내문구 
+		printf("\n유저 이름을 입력하세요: "); //안내문구 
 		//scanf("%s", player_name[i][0]);
 		scanf("%s", cur_player[i].name);
 		fflush(stdin);
@@ -181,7 +181,7 @@ int rolldice(int player)
 {
     char c;
     int dice_no;
-    printf("%d 번째 Player의 차례입니다! 주사위를 굴리기 위해 아무 키나 눌러주세요. (성적을 보려면 g를 입력하세요): \n\n", player+1);
+    printf("\n\n%d 번째 Player의 차례입니다! 주사위를 굴리기 위해 아무 키나 눌러주세요. (성적을 보려면 g를 입력하세요): ", player+1);
     c = getchar();
     fflush(stdin);
     
@@ -190,7 +190,7 @@ int rolldice(int player)
         printGrades(player);
 
     dice_no = (rand()%MAX_DICE + 1);
-	printf("주사위 숫자는 %d 입니다.\n", dice_no);
+	printf("\n주사위 숫자는 %d 입니다.\n", dice_no);
     return dice_no;
 }
 //roll the dice and if you press 'g': show the grades by 'printGrades(player)' function
@@ -222,19 +222,19 @@ void actionNode(int player)
         case SMMNODE_TYPE_LECTURE:
 
         		if(cur_player[player].energy < smmObj_getNodeEnergy(boardPtr)){
-					printf("에너지가 부족합니다.\n\n");
+					printf("\n에너지가 부족합니다.\n");
 					
         			break;
 				}//if player doesn't have enough energy to take lecture: break
         		if(checkLecture(LISTNO_OFFSET_GRADE + player, smmObj_getNodeName(boardPtr)) > -1){
-        			printf("이미 수강한 강의입니다.\n\n");
+        			printf("\n이미 수강한 강의입니다.\n");
 					break;
 				} //if player has taken this lecture before: break
 				//신호및시스템이 자꾸 수강 안했는데 수강했다고 뜸 
 				//통신이론은 수강 했는데 재수강이됨;; 
 
 				
-				printf("수강하시겠습니까? Y: 1, N: press any key - \n"); //수강 의사 묻기 
+				printf("\n수강하시겠습니까? Y: 1, N: press any key - "); //수강 의사 묻기 
 				scanf("%d", &answer);
 				fflush(stdin);
 				if (answer == 1)
@@ -254,7 +254,7 @@ void actionNode(int player)
         	
         case SMMNODE_TYPE_RESTAURANT:
         	cur_player[player].energy += smmObj_getNodeEnergy(boardPtr);
-        	printf("%d 만큼의 에너지를 보충합니다. \n\n", smmObj_getNodeEnergy(boardPtr));
+        	printf("\n%d 만큼의 에너지를 보충합니다. \n\n\n", smmObj_getNodeEnergy(boardPtr));
         	break;
         //식당 노드의 경우 해당 노드의 에너지 만큼 보충 
         	
@@ -278,12 +278,12 @@ void actionNode(int player)
       		CardName = smmObj_getNodeName(smmdb_getData(LISTNO_FOODCARD, randomFoodCard));
 	    	cur_player[player].energy += smmObj_getNodeEnergy(smmdb_getData(LISTNO_FOODCARD, randomFoodCard));
         	
-        	printf("%s가 선택되었습니다. %d 만큼의 에너지를 보충합니다.\n\n", CardName, smmObj_getNodeEnergy(smmdb_getData(LISTNO_FOODCARD, randomFoodCard)));
+        	printf("\n선택된 음식은 %s입니다. %d 만큼의 에너지를 보충합니다.\n\n", CardName, smmObj_getNodeEnergy(smmdb_getData(LISTNO_FOODCARD, randomFoodCard)));
         	break;
         	
         case SMMNODE_TYPE_FESTIVAL:
         	randomFestCard = rand()%smmdb_len(LISTNO_FESTCARD);
-        	printf("%s\n\n", smmObj_getNodeName(smmdb_getData(LISTNO_FESTCARD, randomFestCard)));
+        	printf("\n%s\n\n", smmObj_getNodeName(smmdb_getData(LISTNO_FESTCARD, randomFestCard)));
         	break;
         	
         default:
@@ -406,7 +406,7 @@ int main(int argc, const char * argv[])
     do
     {
         //input player number to player_nr
-        printf("플레이어 수를 입력하세요 :");
+        printf("\n플레이어 수를 입력하세요 :");
   		scanf("%d", &player_nr);
   		fflush(stdin);
     }
@@ -434,14 +434,14 @@ int main(int argc, const char * argv[])
         if (cur_player[turn].inLab > 0){
         	outLabNo = rand()%MAX_DICE+1;
         	cur_player[turn].energy -= smmObj_getNodeEnergy(smmdb_getData(LISTNO_NODE, SMMNODE_TYPE_LABORATORY));
-        	printf("%s는 실험중입니다. \n\n", cur_player[turn].name);
-	        printf("Lab exodus no is. %d !!\n\n", outLabNo);
+        	printf("\n%s는 실험중입니다. \n\n", cur_player[turn].name);
+	        printf("\n\nLab exodus no is. %d !!\n\n", outLabNo);
 	        if (rolldice(turn) >= outLabNo){
 	        	cur_player[turn].inLab = 0;
-	        	printf("실험이 종료되었습니다!!\n\n");
+	        	printf("\n\n실험이 종료되었습니다!!\n\n");
 			}
 			else
-	        	printf("조금 더 실험해주세요!! \n\n");
+	        	printf("\n\n조금 더 실험해주세요!! \n\n");
 		}
 		else
 		{ //Normal Process
@@ -487,7 +487,7 @@ int main(int argc, const char * argv[])
 	{
 		printf("player %d의 성적표\n\n", i+1);
     	printGrades(i);
-    	printf("\n\n\n\n");
+    	printf("\n\n");
 	}
     
     free(cur_player);
