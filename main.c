@@ -225,9 +225,11 @@ void actionNode(int player)
         			printf("이미 수강한 강의입니다.\n\n");
 					break;
 				} //if player has taken this lecture before: break
+				//신호및시스템이 자꾸 수강 안했는데 수강했다고 뜸 
+				//통신이론은 수강 했는데 재수강이됨;; 
 
 				
-				printf("수강하시겠습니까? Y: 1, N: press any key - \n");
+				printf("수강하시겠습니까? Y: 1, N: press any key - \n"); //수강 의사 묻기 
 				scanf("%d", &answer);
 				fflush(stdin);
 				if (answer == 1)
@@ -237,7 +239,7 @@ void actionNode(int player)
         			//grade generation 
        				gradePtr = smmObj_genObject(smmObj_getNodeName(boardPtr), smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, rand()%9);
        				smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
-       				printGrades(player); 
+       				printGrades(player); //플레이어의 성적표 출력하기 
        				break;
 				}
 				else
@@ -249,9 +251,11 @@ void actionNode(int player)
         	cur_player[player].energy += smmObj_getNodeEnergy(boardPtr);
         	printf("%d 만큼의 에너지를 보충합니다. \n\n", smmObj_getNodeEnergy(boardPtr));
         	break;
+        //식당 노드의 경우 해당 노드의 에너지 만큼 보충 
         	
         case SMMNODE_TYPE_LABORATORY:
         	break;
+        //실험실은 그냥 지나가기. 실험시간으로 왔을 경우는 main 함수에서 구현 
         
         case SMMNODE_TYPE_HOME:
         	cur_player[player].energy += smmObj_getNodeEnergy(boardPtr);
@@ -426,7 +430,7 @@ int main(int argc, const char * argv[])
         	outLabNo = rand()%MAX_DICE+1;
         	cur_player[turn].energy -= smmObj_getNodeEnergy(smmdb_getData(LISTNO_NODE, SMMNODE_TYPE_LABORATORY));
         	printf("%s는 실험중입니다. \n\n", cur_player[turn].name);
-	        printf("Lab exodus no is. %d !!", outLabNo);
+	        printf("Lab exodus no is. %d !!\n\n", outLabNo);
 	        if (rolldice(turn) >= outLabNo){
 	        	cur_player[turn].inLab = 0;
 	        	printf("실험이 종료되었습니다!!\n\n");
