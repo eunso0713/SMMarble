@@ -97,7 +97,7 @@ void printGrades(int player)
         char firstTwoChars[3]; // 끝에 NULL 문자('\0')를 고려하여 크기를 3으로 지정
         strncpy(firstTwoChars, gradeName, 2);
         firstTwoChars[2] = '\0'; // NULL 문자 추가하기
-		printf("%s: %s\n", smmObj_getNodeName(gradePtr), firstTwoChars);
+		printf("%s: %d학점, 성적: %s\n", smmObj_getNodeName(gradePtr), smmObj_getNodeCredit(gradePtr), firstTwoChars);
      
 	//	printf("%s: %s\n", smmObj_getNodeName(gradePtr), smmObj_getGradeName(smmObj_getNodeGrade(gradePtr)));
 	}
@@ -139,8 +139,11 @@ int checkLecture(int list_nr, char *lectureName)
 //printf("lecture name is %s\n", lectureName);
 	for (index = 0; index < length; index++)
 	{
-		if(strcmp(smmObj_getNodeName(smmdb_getData(list_nr, index)), lectureName) == 1)
+		printf("비교: %s , %s\n\n", smmObj_getNodeName(smmdb_getData(list_nr, index)), lectureName);
+		if(strcmp(smmObj_getNodeName(smmdb_getData(list_nr, index)), lectureName) == 0){
+			printf("Index is %d\n", index);
 			return index;
+		}
 	}
 	
 	return -1;
@@ -177,6 +180,7 @@ void generatePlayers(int n, int initEnergy) //generate a new player
 int rolldice(int player)
 {
     char c;
+    int dice_no;
     printf("%d 번째 Player의 차례입니다! 주사위를 굴리기 위해 아무 키나 눌러주세요. (성적을 보려면 g를 입력하세요): \n\n", player+1);
     c = getchar();
     fflush(stdin);
@@ -185,8 +189,9 @@ int rolldice(int player)
     if (c == 'g')
         printGrades(player);
 
-    
-    return (rand()%MAX_DICE + 1);
+    dice_no = (rand()%MAX_DICE + 1);
+	printf("주사위 숫자는 %d 입니다.\n", dice_no);
+    return dice_no;
 }
 //roll the dice and if you press 'g': show the grades by 'printGrades(player)' function
 
@@ -237,7 +242,7 @@ void actionNode(int player)
 					cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
         			cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
         			//grade generation 
-       				gradePtr = smmObj_genObject(smmObj_getNodeName(boardPtr), smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, rand()%9);
+       				gradePtr = smmObj_genObject(smmObj_getNodeName(boardPtr), smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), cur_player[player].position, rand()%9);
        				smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
        				printGrades(player); //플레이어의 성적표 출력하기 
        				break;
@@ -473,6 +478,17 @@ int main(int argc, const char * argv[])
         
     }
     
+    
+    //게임 종료 후 종료 안내 문구 출력 
+    printf("\n\n\n\n\n\nGame End!!!!!!!!!\n\n\n\n\n");
+    
+    //플레이어 별 성적표(강의 이름, 학점, 성적) 출력 
+    for (i=0;i<player_nr;i++)
+	{
+		printf("player %d의 성적표\n\n", i+1);
+    	printGrades(i);
+    	printf("\n\n\n\n");
+	}
     
     free(cur_player);
 
